@@ -4,7 +4,7 @@ local ScrH = ScrH()
 local PlayerListWindow
 local PlyListContainer
 
-fuse.gui.RefreshPlyList = function()
+fuseui.RefreshPlyList = function()
 
   if not PlayerListWindow then return end
   if not PlyListContainer then fuse.print("No Derma Panel to update") return end
@@ -27,7 +27,7 @@ fuse.gui.RefreshPlyList = function()
     PlyNameButton:SetPos(ScrH/25,0)
     PlyNameButton:SetSize( ScrW/11, ScrH/25)
     PlyNameButton.DoClick = function()
-      fuse.gui.OpenProfileMenu(Ply)
+      fuseui.OpenProfileMenu(Ply)
     end
     PlyNameButton.Paint = function( self, w, h )
       if not Ply:IsValid() then return end
@@ -39,7 +39,7 @@ fuse.gui.RefreshPlyList = function()
   end
 end
 net.Receive("fuse_PlyListUpdate", function()
-  fuse.gui.RefreshPlyList()
+  fuseui.RefreshPlyList()
 end)
 
 local function CreateMenu()
@@ -54,7 +54,7 @@ local function CreateMenu()
   PlayerListWindow:SetKeyboardInputEnabled(false)
 
   PlayerListWindow.Paint = function( self, w, h)
-    draw.RoundedBox( 0, 0, 0, w, h, Color(100,100,100,200))
+    draw.RoundedBox( 0, 0, 0, w, h, Color(0,0,0,200))
     draw.RoundedBox( 0, 0, 0, PlayerListWindow:GetWide(), ScrH/25, Color(20,20,20))
   end
 
@@ -94,14 +94,14 @@ local function CreateMenu()
   PlyListContainer:DockPadding( 0, 0, 0, 0)
   PlyListContainer:SetVerticalScrollbarEnabled(true)
 
-  fuse.gui.RefreshPlyList()
+  fuseui.RefreshPlyList()
 end
 
-fuse.gui.OpenMenu = function()
+fuseui.OpenMenu = function()
 
   if PlayerListWindow then
     PlayerListWindow:Show()
-    for k, Menu in pairs( fuse.gui.ProfileMenus ) do
+    for k, Menu in pairs( fuseui.ProfileMenus ) do
       Menu:Show()
     end
     return
@@ -111,24 +111,24 @@ fuse.gui.OpenMenu = function()
 
 end
 
-fuse.gui.CloseMenu = function()
+fuseui.CloseMenu = function()
 
   if PlayerListWindow then
     PlayerListWindow:Hide()
-    for k, Menu in pairs( fuse.gui.ProfileMenus ) do
+    for k, Menu in pairs( fuseui.ProfileMenus ) do
       Menu:Hide()
     end
    end
 
 end
 
-fuse.gui.ToggleMenu = function()
+fuseui.ToggleMenu = function()
 
   if PlayerListWindow then
     if PlayerListWindow:IsVisible() then
-      fuse.gui.CloseMenu()
+      fuseui.CloseMenu()
     else
-      fuse.gui.OpenMenu()
+      fuseui.OpenMenu()
     end
     return
   end

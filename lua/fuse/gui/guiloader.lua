@@ -4,7 +4,7 @@ if not fuse then
   print("[FUSE GUI] ERROR: FUSE API NOT PRESENT")
 end
 
-fuse.gui = {} --Make GUI API extension
+fuseui = {} --Make GUI API extension
 
 fuse.print("LOADING FUSE GUI")
 

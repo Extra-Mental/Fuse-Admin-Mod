@@ -1,30 +1,31 @@
 local ScrW = ScrW()
 local ScrH = ScrH()
 
-fuse.gui.ProfileMenus = {}
+fuseui.ProfileMenus = {}
 
-fuse.gui.OpenProfileMenu = function(Ply)
+fuseui.OpenProfileMenu = function(Ply)
 
-  //if fuse.gui.ProfileMenus[Ply] then
-    //fuse.gui.ProfileMenus[Ply]:Show()
-    //return
-  //end
+	local Nick = Ply:Nick()
+	local ID = Ply:SteamID()
+	local TeamColour = team.GetColor(Ply:Team())
 
 	local ProfileMenu = vgui.Create("DFrame")
 	ProfileMenu:SetSize(ScrW/3.5, ScrH/3.3)
   ProfileMenu:ShowCloseButton(false)
   ProfileMenu:MakePopup()
   ProfileMenu:SetKeyboardInputEnabled(false)
-  ProfileMenu.Paint = function( self, w, h )
-    draw.RoundedBox( 0, 0, 0, w, h, Color(100,100,100,200))
-    draw.RoundedBox( 0, 0, 0, ScrH/11, ScrH/11, team.GetColor(Ply:Team()))
-    draw.RoundedBox( 0, 0, 0, w, ScrH/30, team.GetColor(Ply:Team()))
+  ProfileMenu:DockPadding( 0, ScrH/11, 0, 0)
+  ProfileMenu.Paint = function( self, w, h)
+    --Need to code this to show disconnect theme when player no longer valid
+    draw.RoundedBox( 0, 0, 0, w, h, Color(0,0,0,200))
+    draw.RoundedBox( 0, 0, 0, ScrH/11, ScrH/11, TeamColour)
+    draw.RoundedBox( 0, 0, 0, w, ScrH/30, TeamColour)
     surface.SetFont( "Trebuchet24" )
 	  surface.SetTextColor( 0, 0, 0)
-	  surface.SetTextPos( ScrH/10, ScrH/180)
-	  surface.DrawText(Ply:Nick())
+	  surface.SetTextPos(ScrH/10, ScrH/180)
+	  surface.DrawText(Nick)
   end
-  fuse.gui.ProfileMenus[Ply] = ProfileMenu
+  fuseui.ProfileMenus[Ply] = ProfileMenu
 
   local CloseButton = vgui.Create( "DButton" , ProfileMenu)
   CloseButton:SetSize( ScrH/30, ScrH/30)
@@ -32,7 +33,7 @@ fuse.gui.OpenProfileMenu = function(Ply)
   CloseButton:SetText("")
   CloseButton.DoClick = function()
     ProfileMenu:Remove()
-    fuse.gui.ProfileMenus[Ply] = nil
+    fuseui.ProfileMenus[Ply] = nil
   end
   local CloseIcon = Material( "vgui/white_x.png" )
   CloseButton.Paint = function( self, w, h )
@@ -47,7 +48,7 @@ fuse.gui.OpenProfileMenu = function(Ply)
   BanButton:SetPos(ScrH/11, ScrH/30)
   BanButton:SetText("")
   BanButton.DoClick = function()
-    RunConsoleCommand("ulx", "ban", Ply:Nick())
+    RunConsoleCommand("ulx", "banid", ID, 0, "Fuse Port Ban")
   end
   local BanIcon = Material( "vgui/ban.png" )
   BanButton.Paint = function( self, w, h )
@@ -62,7 +63,7 @@ fuse.gui.OpenProfileMenu = function(Ply)
   KickButton:SetPos((ScrH/11)+(ScrH/17.25), ScrH/30)
   KickButton:SetText("")
   KickButton.DoClick = function()
-    RunConsoleCommand("ulx", "kick", Ply:Nick())
+    RunConsoleCommand("ulx", "kick", Nick)
   end
   local KickIcon = Material( "vgui/kick.png" )
   KickButton.Paint = function( self, w, h )
@@ -77,7 +78,7 @@ fuse.gui.OpenProfileMenu = function(Ply)
   FreezeButton:SetPos((ScrH/11)+(ScrH/17.25*2-1), ScrH/30)
   FreezeButton:SetText("")
   FreezeButton.DoClick = function()
-    RunConsoleCommand("ulx", "freeze", Ply:Nick())
+    RunConsoleCommand("ulx", "freeze", Nick)
   end
   local FreezeIcon = Material( "vgui/freeze.png" )
   FreezeButton.Paint = function( self, w, h )
@@ -92,7 +93,7 @@ fuse.gui.OpenProfileMenu = function(Ply)
   JailButton:SetPos((ScrH/11)+(ScrH/17.25*3-1), ScrH/30)
   JailButton:SetText("")
   JailButton.DoClick = function()
-      RunConsoleCommand("ulx", "jail", Ply:Nick())
+      RunConsoleCommand("ulx", "jail", Nick)
   end
   local JailIcon = Material( "vgui/jail.png" )
   JailButton.Paint = function( self, w, h )
@@ -101,6 +102,38 @@ fuse.gui.OpenProfileMenu = function(Ply)
 	  surface.SetMaterial(JailIcon)
     surface.DrawTexturedRect( 0, 0, w, h )
   end
+
+	local GotoButton = vgui.Create( "DButton" , ProfileMenu)
+  GotoButton:SetSize(ScrH/17.25, ScrH/17.25)
+  GotoButton:SetPos((ScrH/11)+(ScrH/17.25*4-2), ScrH/30)
+  GotoButton:SetText("")
+  GotoButton.DoClick = function()
+      RunConsoleCommand("ulx", "goto", Nick)
+  end
+  local GotoIcon = Material( "vgui/goto.png" )
+  GotoButton.Paint = function( self, w, h )
+    draw.RoundedBox( 0, 0, 0, w, h, Color(62,189,236))
+    surface.SetDrawColor(Color(255,255,255,255))
+	  surface.SetMaterial(GotoIcon)
+    surface.DrawTexturedRect( 0, 0, w, h )
+  end
+
+	local BringButton = vgui.Create( "DButton" , ProfileMenu)
+  BringButton:SetSize(ScrH/17.25, ScrH/17.25)
+  BringButton:SetPos((ScrH/11)+(ScrH/17.25*5-2), ScrH/30)
+  BringButton:SetText("")
+  BringButton.DoClick = function()
+      RunConsoleCommand("ulx", "bring", Nick)
+  end
+  local BringIcon = Material( "vgui/bring.png" )
+  BringButton.Paint = function( self, w, h )
+    draw.RoundedBox( 0, 0, 0, w, h, Color(233,131,31))
+    surface.SetDrawColor(Color(255,255,255,255))
+	  surface.SetMaterial(BringIcon)
+    surface.DrawTexturedRect( 0, 0, w, h )
+  end
+
+	hook.Run("fuseui_createtabs", ProfileMenu, Ply) --Calls the code to add tabs
 
   local Avatar, Button = fuse.getPlyAvatar(Ply, ProfileMenu)
 	Avatar:SetSize(ScrH/12, ScrH/12)

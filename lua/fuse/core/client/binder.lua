@@ -1,4 +1,4 @@
 
-concommand.Add( "fuse_menu", fuse.gui.ToggleMenu)
-concommand.Add( "fuse_menu_open", fuse.gui.OpenMenu)
-concommand.Add( "fuse_menu_close", fuse.gui.CloseMenu)
+concommand.Add( "fuse_menu", fuseui.ToggleMenu)
+concommand.Add( "fuse_menu_open", fuseui.OpenMenu)
+concommand.Add( "fuse_menu_close", fuseui.CloseMenu)
