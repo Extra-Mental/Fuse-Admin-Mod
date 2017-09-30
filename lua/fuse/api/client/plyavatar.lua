@@ -1,5 +1,5 @@
 
-local BotIcon = Material( "vgui/bot.png" )
+local BotIcon = Material( "bot.png" )
 
 fuse.getPlyAvatar = function(Ply, Parent)
 

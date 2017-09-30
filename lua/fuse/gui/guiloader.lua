@@ -9,6 +9,7 @@ fuseui = {} --Make GUI API extension
 fuse.print("LOADING FUSE GUI")
 
 --Load Shared API files
+
 fuse.print("  SHARED")
 local files = file.Find( "fuse/gui/shared/*", "LUA")
 

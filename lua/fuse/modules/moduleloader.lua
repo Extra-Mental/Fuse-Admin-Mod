@@ -1,10 +1,10 @@
 AddCSLuaFile()
 
-fuse.print("LOADING CORE")
+fuse.print("LOADING MODULES")
 
 --Load Shared API files
 fuse.print("  SHARED")
-local files = file.Find( "fuse/core/shared/*", "LUA")
+local files = file.Find( "fuse/modules/shared/*", "LUA")
 
 for k, v in pairs(files) do
   fuse.print("    "..v)
@@ -14,7 +14,7 @@ end
 
 if SERVER then
   fuse.print("  SERVER")
-  local files = file.Find( "fuse/core/server/*", "LUA")
+  local files = file.Find( "fuse/modules/server/*", "LUA")
 
   for k, v in pairs(files) do
     fuse.print("    "..v)
@@ -23,7 +23,7 @@ if SERVER then
 end
 
 fuse.print("  CLIENT")
-local files = file.Find( "fuse/core/client/*", "LUA")
+local files = file.Find( "fuse/modules/client/*", "LUA")
 
 for k, v in pairs(files) do
   fuse.print("    "..v)
@@ -31,4 +31,4 @@ for k, v in pairs(files) do
   if CLIENT then include("client/"..v) end
 end
 
-fuse.print("CORE LOADED\n")
+fuse.print("MODULES LOADED\n")

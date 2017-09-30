@@ -29,6 +29,8 @@ fuseui.RefreshPlyList = function()
     PlyNameButton.DoClick = function()
       fuseui.OpenProfileMenu(Ply)
     end
+    fuseui.ApplyTilesToButton(PlyNameButton, Target)
+
     PlyNameButton.Paint = function( self, w, h )
       if not Ply:IsValid() then return end
       local Gray = 250-((k%2)*50)
@@ -66,7 +68,7 @@ local function CreateMenu()
     PlayerListWindow:Hide()
   end
 
-  local CloseIcon = Material( "vgui/white_x.png" )
+  local CloseIcon = Material( "white_x.png" )
   CloseButton.Paint = function( self, w, h )
     draw.RoundedBox( 0, 0, 0, w, h, fuse.ColourMultiply(Color(255,0,0),CloseButton:IsHovered()))
     surface.SetDrawColor(Color(255,255,255,255))
@@ -81,7 +83,7 @@ local function CreateMenu()
   SettingsButton.DoClick = function()
   end
 
-  local SettingsIcon = Material( "vgui/gear.png" )
+  local SettingsIcon = Material( "gear.png" )
   SettingsButton.Paint = function( self, w, h )
     draw.RoundedBox( 0, 0, 0, w, h, fuse.ColourMultiply(Color(100,100,100),SettingsButton:IsHovered()))
     surface.SetDrawColor(Color(255,255,255,255))
@@ -136,3 +138,7 @@ fuseui.ToggleMenu = function()
   CreateMenu()
 
 end
+
+concommand.Add( "fuse_menu", fuseui.ToggleMenu)
+concommand.Add( "fuse_menu_open", fuseui.OpenMenu)
+concommand.Add( "fuse_menu_close", fuseui.CloseMenu)
