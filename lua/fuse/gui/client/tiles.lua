@@ -26,7 +26,12 @@ local function BetweenVectors(X, Y, XMin, XMax, YMin, YMax)
 
 end
 
-fuseui.ApplyTilesToButton = function(Button, Target)
+local TileWindowsThinkFuncs = {}
+local function TileWindowsThink(Func)
+  table.insert(TileWindowsThinkFuncs, Func)
+end
+
+fuseui.ApplyTilesToButton = function(PlyButton, Target)
 
   timer.Simple( 0.1, function()
     local Frame = vgui.Create( "DFrame" )
@@ -47,7 +52,7 @@ fuseui.ApplyTilesToButton = function(Button, Target)
       TileButton:SetText("")
       TileButton:DockMargin( 0, 0, 0, 0)
       TileButton.DoClick = function()
-        TileData.LClickFunction(Button, Target)
+        TileData.LClickFunction(TileButton, Target)
       end
       TileButton.Paint = function( self, W, H )
         TileData.Paint(TileButton, W, H)
@@ -55,16 +60,34 @@ fuseui.ApplyTilesToButton = function(Button, Target)
 
     end
 
-    Button.Think = function()
+      if not PlyButton:IsValid() then Frame:Remove() return true end
       local X, Y = Frame:CursorPos()
-      if Button:IsHovered() or (Frame:IsVisible() and BetweenVectors(X, Y, 0, Frame:GetWide(), 0, Frame:GetTall()))  then
+      if PlyButton:IsHovered() then -- Make it visible if hovered no matter what
         Frame:SetVisible(true)
-        Frame:SetPos(Button:LocalToScreen(Button:GetWide()-4,0))
-        return
+        Frame:SetPos(PlyButton:LocalToScreen(PlyButton:GetWide()-4,0))
+        return false
+      end
+      if PlyButton:IsVisible() and Frame:IsVisible() and BetweenVectors(X, Y, 0, Frame:GetWide(), 0, Frame:GetTall()) then
+        Frame:SetVisible(true)
+        Frame:SetPos(PlyButton:LocalToScreen(PlyButton:GetWide()-4,0))
+        return false
       end
       Frame:SetVisible(false)
     end
 
+    TileWindowsThink(ThinkFunc)
+
   end)
 
 end
+
+local function onThink()
+
+  for k, v in pairs(TileWindowsThinkFuncs) do
+	   DeleteFunc = v()
+     if DeleteFunc then table.remove(TileWindowsThinkFuncs, k) end
+  end
+
+end
+
+hook.Add( "Think", "fusegui_tiles", onThink )
