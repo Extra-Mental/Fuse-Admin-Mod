@@ -51,6 +51,7 @@ fuseui.ApplyTilesToButton = function(PlyButton, Target)
       TileButton:SetSize( ScrH()/25, ScrH()/25)
       TileButton:SetText("")
       TileButton:DockMargin( 0, 0, 0, 0)
+      TileButton:SetTooltip(TileData.Tooltip)
       TileButton.DoClick = function()
         TileData.LClickFunction(TileButton, Target)
       end
@@ -60,6 +61,7 @@ fuseui.ApplyTilesToButton = function(PlyButton, Target)
 
     end
 
+    local ThinkFunc = function()
       if not PlyButton:IsValid() then Frame:Remove() return true end
       local X, Y = Frame:CursorPos()
       if PlyButton:IsHovered() then -- Make it visible if hovered no matter what

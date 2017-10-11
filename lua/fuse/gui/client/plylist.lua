@@ -4,44 +4,59 @@ local ScrH = ScrH()
 local PlayerListWindow
 local PlyListContainer
 
+fuseui.PlyListAdd = function(Ply)
+
+  if not PlayerListWindow then return end
+  if not PlyListContainer then fuse.print("No Derma Panel to update") return end
+
+  local PlyContainer = vgui.Create("DPanel", PlyListContainer)
+  PlyContainer:SetHeight(ScrH/25)
+  PlyContainer:SetWidth(PlyContainer:GetWide())
+  PlyContainer:DockPadding(0, 0, 0, 0)
+  PlyContainer:DockMargin(0, 0, 0, 0)
+  PlyContainer:Dock(TOP)
+
+  local PlyAvatar = fuse.getPlyAvatar(Ply, PlyContainer) -- Rip if you dont have the api
+  PlyAvatar:SetPos(0, 0)
+  PlyAvatar:SetSize(ScrH/25, ScrH/25)
+
+  local PlyNameButton = vgui.Create( "DButton", PlyContainer)
+  PlyNameButton:SetText( Ply:Nick() )
+  PlyNameButton:SetPos(ScrH/25,0)
+  PlyNameButton:SetSize(ScrW/11, ScrH/25)
+  PlyNameButton.DoClick = function()
+    fuseui.OpenProfileMenu(Ply)
+  end
+  PlyNameButton.Paint = function( self, w, h )
+    if not Ply:IsValid() then
+      PlyContainer:Remove()
+      fuseui.RefreshPlyList()
+    return end
+    local X, Y = PlyContainer:GetPos()
+    local Tall = PlyContainer:GetTall()*2
+    local Mod = Y%Tall
+    local Gray = 250-(Mod)
+    draw.RoundedBox( 0, 0, 0, w, h, Color(Gray,Gray,Gray))
+    draw.RoundedBox( 0, 0, 0, 7.5, h, team.GetColor(Ply:Team()))
+  end
+
+  fuseui.ApplyTilesToButton(PlyNameButton, Ply)
+end
+
 fuseui.RefreshPlyList = function()
 
   if not PlayerListWindow then return end
   if not PlyListContainer then fuse.print("No Derma Panel to update") return end
 
-  PlyListContainer:Clear()
-
-  for k, Ply in pairs( player.GetAll() ) do
-    local PlyContainer = vgui.Create( "DPanel", PlyListContainer)
-    PlyContainer:Dock(TOP)
-    PlyContainer:SetHeight(ScrH/25)
-    PlyContainer:SetWidth(PlyContainer:GetWide())
-    PlyContainer:DockPadding( 0, 0, 0, 0)
-
-    local PlyAvatar = fuse.getPlyAvatar(Ply, PlyContainer)
-    PlyAvatar:SetPos(0, 0)
-    PlyAvatar:SetSize(ScrH/25, ScrH/25)
-
-    local PlyNameButton = vgui.Create( "DButton", PlyContainer)
-    PlyNameButton:SetText( Ply:Nick() )
-    PlyNameButton:SetPos(ScrH/25,0)
-    PlyNameButton:SetSize( ScrW/11, ScrH/25)
-    PlyNameButton.DoClick = function()
-      fuseui.OpenProfileMenu(Ply)
-    end
-    fuseui.ApplyTilesToButton(PlyNameButton, Target)
-
-    PlyNameButton.Paint = function( self, w, h )
-      if not Ply:IsValid() then return end
-      local Gray = 250-((k%2)*50)
-      draw.RoundedBox( 0, 0, 0, w, h, Color(Gray,Gray,Gray))
-      draw.RoundedBox( 0, 0, 0, 7.5, h, team.GetColor(Ply:Team()))
-    end
-
-  end
+  local Children = PlyListContainer:GetChildren()
+	for k, Child in pairs(Children) do
+		Child:AlignTop(0)
+	end
 end
-net.Receive("fuse_PlyListUpdate", function()
-  fuseui.RefreshPlyList()
+
+net.Receive("fuse_PlyListAdd", function()
+  fuseui.PlyListAdd(net.ReadEntity())
+  fuseui.RefreshPlyList() -- Not needed but may prevent UI positioning glitches
 end)
 
 local function CreateMenu()
@@ -92,11 +107,14 @@ local function CreateMenu()
   end
 
   PlyListContainer = vgui.Create( "DScrollPanel" , PlayerListWindow)
-  PlyListContainer:Dock(FILL)
-  PlyListContainer:DockPadding( 0, 0, 0, 0)
+  PlyListContainer:DockPadding(0, 0, 0, 0)
+  PlyListContainer:DockMargin(0, 0, 0, 0)
   PlyListContainer:SetVerticalScrollbarEnabled(true)
+  PlyListContainer:Dock(FILL)
 
-  fuseui.RefreshPlyList()
+  for k, Ply in pairs( player.GetAll() ) do
+    fuseui.PlyListAdd(Ply)
+  end
 end
 
 fuseui.OpenMenu = function()

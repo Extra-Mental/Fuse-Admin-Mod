@@ -1,3 +1,7 @@
+resource.AddFile("materials/ban.png") -- Must add this line to send files to clients
+
+if SERVER then return end
+
 fuseui.NewTile("Ban", function(Tile, W, H)
 
   draw.RoundedBox( 0, 0, 0, W, H, Color(255,0,0))

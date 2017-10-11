@@ -1,12 +1,12 @@
 
-util.AddNetworkString("fuse_PlyListUpdate")
+util.AddNetworkString("fuse_PlyListAdd")
 
-local function ConEvent()
-  timer.Simple( 0.5, function()
-    net.Start("fuse_PlyListUpdate")
+hook.Add( "PlayerInitialSpawn", "fuse_add_ply", function(Ply)
+
+  timer.Simple( 1, function()
+    net.Start("fuse_PlyListAdd")
+    net.WriteEntity(Ply)
     net.Broadcast()
   end)
-end
 
-hook.Add( "PlayerInitialSpawn", "fuse_refresh_spawn", ConEvent)
-hook.Add( "PlayerDisconnected", "fuse_refresh_disconnect", ConEvent)
+end)
